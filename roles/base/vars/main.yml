@@ -5,6 +5,7 @@ pkgs:
   - autojump
   - sudo
   - mercurial
+  - locate
 config_files:
   - zsh_aliases
   - zsh_functions
