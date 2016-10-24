@@ -1,0 +1,11 @@
+---
+config_file: /etc/ssh/sshd_config
+pkgs:
+  - zsh
+  - autojump
+  - sudo
+  - mercurial
+config_files:
+  - zsh_aliases
+  - zsh_functions
+  - zshrc
