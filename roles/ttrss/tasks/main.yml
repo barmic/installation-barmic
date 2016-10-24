@@ -1,0 +1,18 @@
+---
+- name: Add APT repository (dotdeb)
+  apt_repository: repo="deb http://packages.dotdeb.org jessie all" filename=dotdeb
+- name: Install pkgs
+  apt: name={{item}} update_cache=yes state=latest
+  with_items:
+    - nginx-full
+    - certbot
+    - git
+    - php7.0
+    - php7.0-fpm
+    - php7.0-gd
+    - php7.0-mysql
+    - php7.0-bz2
+    - php7.0-json
+    - php7.0-curl
+- name: Get TinyTiny RSS
+  git: repo=https://tt-rss.org/git/tt-rss.git dest=/opt/ttrss

@@ -18,5 +18,7 @@
 - name: Setting conf for michel
   file: src="/opt/config/zsh/{{item}}" dest="/home/michel/.{{item}}" state=link
   with_items: "{{config_files}}"
+- name: Create SSH config for michel
+  file: path="/home/michel/.ssh/" mode=0700 state=directory
 - name: SSH key for michel
-  copy: src="files/sshpubkey" dest="/home/michel/.authorized_keys" mode=0600
+  copy: src="files/sshpubkey" dest="/home/michel/.ssh/authorized_keys" mode=0600

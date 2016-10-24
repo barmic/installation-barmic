@@ -1,0 +1,10 @@
+---
+- name: Create Albin user
+  user: name=albin comment="Albin Manoel" shell="/usr/bin/zsh"
+- name: Create SSH config for albin
+  file: path="/home/albin/.ssh/" mode=0700 state=directory
+- name: SSH key for albin
+  copy: src="files/albin_pub_key" dest="/home/albin/.ssh/authorized_keys" mode=0600
+- name: Setting conf for albin
+  file: src="/opt/config/zsh/{{item}}" dest="/home/albin/.{{item}}" state=link
+  with_items: "{{config_files}}"
