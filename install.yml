@@ -3,4 +3,7 @@
   roles:
   - base
   - proxy
-  - ttrss
+- hosts: all
+  roles:
+    - ttrss
+    - nginx

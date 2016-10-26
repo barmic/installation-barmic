@@ -1,3 +1,6 @@
 ---
 db_name: ttrssdb
 db_user: ttrss
+subdomain: rss
+rootdir: /opt/ttrss
+php: yes

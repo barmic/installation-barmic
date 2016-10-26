@@ -1,39 +1,12 @@
 ---
-- name: Add APT repository (dotdeb)
-  apt_repository: repo="deb http://packages.dotdeb.org jessie all" filename=dotdeb
-- name: Download Dotdeb key
-  get_url:
-    url: https://www.dotdeb.org/dotdeb.gpg
-    dest: /tmp/dotdeb.gpg
-- name: Add APT key
-  apt_key: file=/tmp/dotdeb.gpg state=present
 - name: Install pkgs
   apt: name={{item}} update_cache=yes state=latest
   with_items:
-    - nginx-full
     - git
     - mariadb-server
-    - php7.0
-    - php7.0-fpm
-    - php7.0-gd
-    - php7.0-mysql
-    - php7.0-bz2
-    - php7.0-json
-    - php7.0-curl
 - name: Get TinyTiny RSS
   git: repo=https://tt-rss.org/git/tt-rss.git dest=/opt/ttrss
-- name: Create TTRSS database
-  mysql_db: name={{db_name}} state=present
-- name: Create ttrss SQL user
-  mysql_user: name={{db_user}} password={{ttrssdb_passwd}} priv="*.*:{{db_name}}" state=present
-- name: Global Nginx configuration
-  copy: src=files/{{item}} dest=/etc/nginx
-  with_items:
-    - php-cgi.conf
-    - proxy_params
-    - drop.conf
-    - letsencrypt_params
-- name: TTRSS site configuration
-  template: src=templates/ttrss.j2 dest=/etc/nginx/site-avaible/ttrss
-- name: Active ttrss configuration
-  file: src=/etc/nginx/site-avaible/ttrss dest=/etc/nginx/site-enable/ttrss state=link
+- name: Send SQL
+  template: src=templates/create_db_and_user.sql.j2 dest=/root/create_db_and_user.sql
+- name: Create TTRSS database and user
+  shell: mysql -u root < /root/create_db_and_user.sql

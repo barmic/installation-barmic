@@ -1,0 +1,39 @@
+---
+- name: Install pkgs
+  apt: name=nginx-full update_cache=yes state=latest
+- name: Install certbot
+  apt: name=certbot state=latest default_release=jessie-backports
+- name: Add APT repository (dotdeb)
+  apt_repository: repo="deb http://packages.dotdeb.org jessie all" filename=dotdeb
+- name: Download Dotdeb key (for php7)
+  get_url:
+    url: https://www.dotdeb.org/dotdeb.gpg
+    dest: /tmp/dotdeb.gpg
+  when: php == 'yes'
+- name: Add APT key of Dotdeb (for php7)
+  apt_key: file=/tmp/dotdeb.gpg state=present
+  when: php == 'yes'
+- name: Install PHP7
+  apt: name={{item}} update_cache=yes state=latest
+  with_items:
+    - php7.0
+    - php7.0-fpm
+    - php7.0-gd
+    - php7.0-mysql
+    - php7.0-bz2
+    - php7.0-json
+    - php7.0-curl
+  when: php == 'yes'
+- name: Global Nginx configuration
+  copy: src=files/{{item}} dest=/etc/nginx
+  with_items:
+    - php-cgi.conf
+    - proxy_params
+    - drop.conf
+    - letsencrypt_params
+- name: Send site configuration
+  template: src=templates/site-conf.j2 dest=/etc/nginx/sites-available/{{subdomain}}
+- name: Active site configuration
+  file: src=/etc/nginx/sites-available/{{subdomain}} dest=/etc/nginx/sites-enabled/{{subdomain}} state=link
+- name: Let's encrypt certificate
+  command: certbot certonly --webroot -w /etc/nginx/letsencrypt -d {{subdomain}}.{{ansible_fqdn}}
