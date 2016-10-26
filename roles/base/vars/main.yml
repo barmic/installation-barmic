@@ -6,6 +6,7 @@ pkgs:
   - sudo
   - mercurial
   - locate
+  - sslh
 config_files:
   - zsh_aliases
   - zsh_functions

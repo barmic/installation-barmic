@@ -1,10 +1,14 @@
 ---
 - name: Install pkgs
-  apt: name=nginx-full update_cache=yes state=latest
+  apt: name={{item}} state=latest
+  with_items:
+    - nginx-full
 - name: Install certbot
   apt: name=certbot state=latest default_release=jessie-backports
 - name: Add APT repository (dotdeb)
   apt_repository: repo="deb http://packages.dotdeb.org jessie all" filename=dotdeb
+- debug: var=php
+- debug: var=rootdir
 - name: Download Dotdeb key (for php7)
   get_url:
     url: https://www.dotdeb.org/dotdeb.gpg

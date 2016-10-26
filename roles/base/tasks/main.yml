@@ -1,11 +1,17 @@
 ---
 - name: Configure SSH (no root)
-  lineinfile: dest="{{config_file}}" regexp="^PermitRootLogin.*yes" line="PermitRootLogin no"
+  lineinfile: dest="{{config_file}}" regexp="^PermitRootLogin.*no" line="PermitRootLogin no"
 - name: Configure SSH (no password)
   lineinfile: dest="{{config_file}}" regexp="^PasswordAuthentication " line="PasswordAuthentication yes"
 - name: Install pkgs
   apt: name={{item}} state=latest
   with_items: "{{pkgs}}"
+- name: Configure SSLH
+  template: src=templates/sslh.j2 dest=/etc/default/sslh
+  register: config_sslh
+- name: Restart SSLH
+  service: name=sslh state=restart
+  when: config_sslh.changed
 - name: Create Michel
   user: name=michel comment="Michel Barret" shell="/usr/bin/zsh"
 - name: Modify root

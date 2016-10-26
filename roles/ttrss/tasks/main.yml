@@ -8,5 +8,7 @@
   git: repo=https://tt-rss.org/git/tt-rss.git dest=/opt/ttrss
 - name: Send SQL
   template: src=templates/create_db_and_user.sql.j2 dest=/root/create_db_and_user.sql
+  register: sql_config
 - name: Create TTRSS database and user
   shell: mysql -u root < /root/create_db_and_user.sql
+  when: sql_config.changed

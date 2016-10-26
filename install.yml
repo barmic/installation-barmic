@@ -6,4 +6,4 @@
 - hosts: all
   roles:
     - ttrss
-    - nginx
+    - { role: nginx, subdomain: rss, rootdir: /opt/ttrss, php: yes }
